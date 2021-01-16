@@ -1,0 +1,41 @@
+const { celebrate, Joi } = require('celebrate');
+
+const validateArticle = celebrate({
+  body: Joi.object().keys({
+    keyword: Joi.string().required(),
+    title: Joi.string().required(),
+    text: Joi.string().required(),
+    date: Joi.string().required(),
+    source: Joi.string().required(),
+    link: Joi.string().required().pattern(/^(https?:\/\/)?([a-zA-z0-9%$&=?/.-]+)\.([a-zA-z0-9%$&=?/.-]+)([a-zA-z0-9%$&=?/.-]+)?(#)?$/),
+    image: Joi.string().required().pattern(/^(https?:\/\/)?([a-zA-z0-9%$&=?/.-]+)\.([a-zA-z0-9%$&=?/.-]+)([a-zA-z0-9%$&=?/.-]+)?(#)?$/),
+  }),
+});
+
+const validateId = celebrate({
+  params: Joi.object().keys({
+    _id: Joi.string().required().length(24).hex(),
+  }),
+});
+
+const validateLogin = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email().min(6),
+    password: Joi.string().required().min(2),
+  }),
+});
+
+const validateRegister = celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email().min(6),
+    password: Joi.string().required().min(2),
+    name: Joi.string().min(2),
+  }),
+});
+
+module.exports = {
+  validateArticle,
+  validateId,
+  validateLogin,
+  validateRegister,
+};
