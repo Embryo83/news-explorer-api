@@ -1,6 +1,7 @@
 const Article = require('../models/article');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
+const { NOT_FOUND_ARTICLE, OTHER_USER_ARTICLE } = require('../utils/errorMessages');
 
 const getArticles = (req, res, next) => {
   Article.find({ owner: req.user._id })
@@ -46,10 +47,10 @@ const createArticle = (req, res, next) => {
 
 const deleteArticle = (req, res, next) => {
   Article.findById(req.params._id).select('+owner')
-    .orFail(new NotFoundError('Публикация не найдена'))
+    .orFail(new NotFoundError(NOT_FOUND_ARTICLE))
     .then((article) => {
       if (article.owner.toString() !== req.user._id) {
-        throw new ForbiddenError('Нельзя удалить чужую карточку');
+        throw new ForbiddenError(OTHER_USER_ARTICLE);
       }
       Article.findByIdAndRemove(req.params._id)
         .then(() => {
