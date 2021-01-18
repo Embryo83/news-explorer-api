@@ -35,7 +35,6 @@ const createUser = (req, res, next) => {
       if (err.name === 'MongoError') {
         next(new ConflictError(NOT_UNIQUE_USER));
       }
-      next(err);
     })
     .catch(next);
 };
