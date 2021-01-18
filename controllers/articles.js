@@ -1,7 +1,7 @@
 const Article = require('../models/article');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
-const { NOT_FOUND_ARTICLE, OTHER_USER_ARTICLE } = require('../utils/errorMessages');
+const { NOT_FOUND_ARTICLE, OTHER_USER_ARTICLE, ARTICLE_IS_DEL } = require('../utils/errorMessages');
 
 const getArticles = (req, res, next) => {
   Article.find({ owner: req.user._id })
@@ -54,7 +54,7 @@ const deleteArticle = (req, res, next) => {
       }
       Article.findByIdAndRemove(req.params._id)
         .then(() => {
-          res.send({ message: 'Статья удалена' });
+          res.send({ message: ARTICLE_IS_DEL });
         })
         .catch((err) => {
           next(err);

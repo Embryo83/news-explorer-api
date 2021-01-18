@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { NOT_VALID_URL, NOT_VALID_IMG_URL } = require('../utils/errorMessages');
 
 const articleSchema = new mongoose.Schema({
   keyword: {
@@ -28,7 +29,7 @@ const articleSchema = new mongoose.Schema({
       validator(url) {
         return /^(http|https):\/\/(www.)?(\w{1,}-?)+\.(\w{1,}-?)+(\/|#)?/.test(url);
       },
-      message: 'Невалидный URL',
+      message: NOT_VALID_URL,
     },
   },
   image: {
@@ -38,7 +39,7 @@ const articleSchema = new mongoose.Schema({
       validator(url) {
         return /^(http|https):\/\/(www.)?(\w{1,}-?)+\.(\w{1,}-?)+(\/|#)?/.test(url);
       },
-      message: 'Невалидный формат ссылки на картинку',
+      message: NOT_VALID_IMG_URL,
     },
   },
   owner: {

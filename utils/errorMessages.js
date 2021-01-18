@@ -7,4 +7,7 @@ module.exports = {
   AUTH_ERROR: 'Некорректно введён email или пароль',
   UNAUTHORIZED: 'Вы не авторизованы',
   NOT_FOUND_ERR: 'Запрашиваемый ресурс не найден',
+  ARTICLE_IS_DEL: 'Статья удалена',
+  NOT_VALID_URL: 'Невалидный URL',
+  NOT_VALID_IMG_URL: 'Невалидный формат ссылки на картинку',
 };
