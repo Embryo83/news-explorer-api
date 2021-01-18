@@ -9,8 +9,6 @@ const limiter = require('./middlewares/rateLimiter.js');
 const finalErrorHandler = require('./middlewares/finalErrorHandler.js');
 const router = require('./routes/index.js');
 const { ENV_PORT, DB_URL, MONGO_CONFIG } = require('./utils/config');
-const NotFoundError = require('./errors/NotFoundError');
-const { NOT_FOUND_ERR } = require('./utils/errorMessages');
 
 const app = express();
 mongoose.connect(DB_URL, MONGO_CONFIG);
