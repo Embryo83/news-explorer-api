@@ -1,4 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
+const isURL = require('validator/lib/isURL');
+const { NOT_VALID_URL } = require('../utils/errorMessages');
 
 const validateArticle = celebrate({
   body: Joi.object().keys({
@@ -7,8 +9,18 @@ const validateArticle = celebrate({
     text: Joi.string().required(),
     date: Joi.string().required(),
     source: Joi.string().required(),
-    link: Joi.string().required().pattern(/^(https?:\/\/)?([a-zA-z0-9%$&=?/.-]+)\.([a-zA-z0-9%$&=?/.-]+)([a-zA-z0-9%$&=?/.-]+)?(#)?$/),
-    image: Joi.string().required().pattern(/^(https?:\/\/)?([a-zA-z0-9%$&=?/.-]+)\.([a-zA-z0-9%$&=?/.-]+)([a-zA-z0-9%$&=?/.-]+)?(#)?$/),
+    link: Joi.string().required().custom((value, helpers) => {
+      if (isURL(value)) {
+        return value;
+      }
+      return helpers.message(NOT_VALID_URL);
+    }),
+    image: Joi.string().required().custom((value, helpers) => {
+      if (isURL(value)) {
+        return value;
+      }
+      return helpers.message(NOT_VALID_URL);
+    }),
   }),
 });
 
