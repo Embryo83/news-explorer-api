@@ -24,9 +24,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 
 app.use(router);
-app.use('*', () => {
-  throw new NotFoundError(NOT_FOUND_ERR);
-});
 
 app.use(errorLogger);
 app.use(errors());
