@@ -52,13 +52,8 @@ const deleteArticle = (req, res, next) => {
       if (article.owner.toString() !== req.user._id) {
         throw new ForbiddenError(OTHER_USER_ARTICLE);
       }
-      Article.findByIdAndRemove(req.params._id)
-        .then(() => {
-          res.send({ message: ARTICLE_IS_DEL });
-        })
-        .catch((err) => {
-          next(err);
-        });
+      article.remove();
+      res.send({ message: ARTICLE_IS_DEL });
     })
     .catch(next);
 };
