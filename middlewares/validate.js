@@ -29,7 +29,7 @@ const validateRegister = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email().min(6),
     password: Joi.string().required().min(2),
-    name: Joi.string().min(2),
+    name: Joi.string().required().min(2),
   }),
 });
 
