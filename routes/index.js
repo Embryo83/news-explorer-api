@@ -11,10 +11,9 @@ router.post('/signin', validateLogin, login);
 
 router.post('/signup', validateRegister, createUser);
 
-router.use(auth);
-router.use('/', articlesRouter);
-router.use('/', usersRouter);
-router.use('*', () => {
+router.use('/', auth, articlesRouter);
+router.use('/', auth, usersRouter);
+router.use('*', auth, () => {
   throw new NotFoundError(NOT_FOUND_ERR);
 });
 
