@@ -9,7 +9,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const { SALT_ROUNDS } = require('../utils/config');
 const { NOT_FOUND_USER, NOT_UNIQUE_USER, AUTH_ERROR } = require('../utils/errorMessages');
 
-const { JWT_KEY } = process.env;
+const { JWT_KEY } = require('../utils/config');
 
 const getUser = (req, res, next) => {
   const userId = mongoose.Types.ObjectId(req.user._id);
