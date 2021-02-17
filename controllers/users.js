@@ -9,7 +9,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const { SALT_ROUNDS } = require('../utils/config');
 const { NOT_FOUND_USER, NOT_UNIQUE_USER, AUTH_ERROR } = require('../utils/errorMessages');
 
-const { JWT_SECRET } = process.env;
+const { JWT_KEY } = process.env;
 
 const getUser = (req, res, next) => {
   const userId = mongoose.Types.ObjectId(req.user._id);
@@ -78,7 +78,7 @@ const login = (req, res, next) => {
           }
           const token = jwt.sign(
             { _id: user._id },
-            JWT_SECRET,
+            JWT_KEY,
             { expiresIn: '7d' },
           );
           return res.status(200).send({ token });
