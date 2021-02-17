@@ -5,10 +5,10 @@ const User = require('../models/user');
 const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
+const { SALT_ROUNDS } = require('../utils/config');
 const { NOT_FOUND_USER, NOT_UNIQUE_USER, AUTH_ERROR } = require('../utils/errorMessages');
 
 const { JWT_SECRET } = process.env;
-const SALT_ROUNDS = 10;
 
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
