@@ -1,6 +1,7 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const User = require('../models/user');
 const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
@@ -11,30 +12,49 @@ const { NOT_FOUND_USER, NOT_UNIQUE_USER, AUTH_ERROR } = require('../utils/errorM
 const { JWT_SECRET } = process.env;
 
 const getUser = (req, res, next) => {
-  User.findById(req.user._id)
-    .orFail(new NotFoundError(NOT_FOUND_USER))
-    .then((user) => res.send({ user }))
+  const userId = mongoose.Types.ObjectId(req.user._id);
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError(NOT_FOUND_USER);
+      }
+      return res.send({
+        name: user.name,
+        email: user.email,
+      });
+    })
     .catch(next);
+  // User.findById(userId)
+  //   .orFail(new NotFoundError(NOT_FOUND_USER))
+  //   .then((user) => res.send({ user }))
+  //   .catch(next);
 };
 
 const createUser = (req, res, next) => {
   const {
     password, email, name,
   } = req.body;
-  return bcrypt.hash(password, SALT_ROUNDS)
-    .then((hash) => User.create({
-      password: hash, email, name,
-    }))
+  if (!email || !password || !name) {
+    throw new UnauthorizedError(AUTH_ERROR);
+  }
+  User.findOne({ email })
     .then((user) => {
-      res.send({
-        name: user.name,
-        email: user.email,
-      });
-    })
-    .catch((err) => {
-      if (err.name === 'MongoError') {
-        next(new ConflictError(NOT_UNIQUE_USER));
+      if (user) {
+        throw new ConflictError(NOT_UNIQUE_USER);
       }
+      bcrypt.hash(password, SALT_ROUNDS)
+        .then((hash) => User.create({
+          name, email, password: hash,
+        })
+          .then((data) => {
+            res.send({
+              name: data.name,
+              _id: data._id,
+              email: data.email,
+            });
+          })
+          .catch(next))
+        .catch(next);
     })
     .catch(next);
 };
@@ -46,7 +66,7 @@ const login = (req, res, next) => {
   if (!password || !email) {
     throw new UnauthorizedError(AUTH_ERROR);
   }
-  return User.findOne({ email }).select('+password')
+  User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         throw new UnauthorizedError(AUTH_ERROR);
@@ -61,7 +81,7 @@ const login = (req, res, next) => {
             JWT_SECRET,
             { expiresIn: '7d' },
           );
-          res.status(200).send({ token });
+          return res.status(200).send({ token });
         });
     })
     .catch(next);
